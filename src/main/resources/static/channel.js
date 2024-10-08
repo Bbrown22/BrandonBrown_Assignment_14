@@ -39,6 +39,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             });
     }
+    document.addEventListener('DOMContentLoaded', function() {
+        const messageInput = document.getElementById('messageInput');
+        const messageForm = document.getElementById('messageForm');
+
+        // Listen for "Enter" key press to submit the form
+        messageInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault(); // Prevent new line on Enter
+                messageForm.submit();   // Submit the form
+            }
+        });
+    });
+
 
     // Polling for new messages every 500 milliseconds
     setInterval(fetchMessages, 500);

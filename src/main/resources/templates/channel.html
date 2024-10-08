@@ -8,10 +8,13 @@
 <body>
 <h1>Channel: [[${channel.name}]]</h1>
 
+<!-- Hidden input to store channel ID -->
+<input type="hidden" id="channel-id" th:value="${channel.id}">
+
 <!-- Display messages -->
 <div id="messages">
     <h2>Messages:</h2>
-    <ul>
+    <ul id="message-list">
         <!-- Loop through messages and display each one -->
         <li th:each="message : ${messages}">
             <strong th:text="${message.username}">Username</strong>: <span th:text="${message.content}">Message</span>
@@ -20,12 +23,19 @@
 </div>
 
 <!-- Form to send a new message -->
-<form action="@{/channels/{channelId}/message(id=${channel.id})}" method="post">
-    <textarea name="content" placeholder="Type your message..." required></textarea>
+<form th:action="@{/channels/{channelId}/message(channelId=${channel.id})}" method="post">
+    <textarea id="messageInput" name="content" placeholder="Type your message..." required></textarea>
     <button type="submit">Send</button>
 </form>
 
+<!-- Back button to return to the channel list -->
+<a href="/channels">
+    <button type="button">Back to Channels</button>
+</a>
+
+
+
 <!-- Include the JavaScript file for handling messages -->
-<script src="/js/channel.js"></script>
+<script src="/js/polling.js"></script>
 </body>
 </html>
