@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Channels</title>
+</head>
+<body>
+<h1>Channels</h1>
+<ul>
+    <li th:each="channel : ${channels}">
+        <a th:href="@{/channels/{id}(id=${channel.id})}" th:text="${channel.name}">Channel Name</a>
+    </li>
+</ul>
+<a href="/channels/create">Create a New Channel</a>
+</body>
+</html>

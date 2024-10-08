@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Channel - [[${channel.name}]]</title>
+</head>
+<body>
+<h1>Channel: [[${channel.name}]]</h1>
+
+<!-- Display messages -->
+<div id="messages">
+    <h2>Messages:</h2>
+    <ul>
+        <!-- Loop through messages and display each one -->
+        <li th:each="message : ${messages}">
+            <strong th:text="${message.username}">Username</strong>: <span th:text="${message.content}">Message</span>
+        </li>
+    </ul>
+</div>
+
+<!-- Form to send a new message -->
+<form action="@{/channels/{channelId}/message(id=${channel.id})}" method="post">
+    <textarea name="content" placeholder="Type your message..." required></textarea>
+    <button type="submit">Send</button>
+</form>
+
+<!-- Include the JavaScript file for handling messages -->
+<script src="/js/channel.js"></script>
+</body>
+</html>
