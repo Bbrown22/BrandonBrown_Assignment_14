@@ -25,15 +25,13 @@
 <!-- Form to send a new message -->
 <form th:action="@{/channels/{channelId}/message(channelId=${channel.id})}" method="post">
     <textarea id="messageInput" name="content" placeholder="Type your message..." required></textarea>
-    <button type="submit">Send</button>
+    <button type="submit" id="sendButton" data-channel-id="[[${channel.id}]]">Send</button>
 </form>
 
 <!-- Back button to return to the channel list -->
 <a href="/channels">
     <button type="button">Back to Channels</button>
 </a>
-
-
 
 <!-- Include the JavaScript file for handling messages -->
 <script src="/js/polling.js"></script>

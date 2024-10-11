@@ -20,11 +20,12 @@ public class MessageService {
     }
 
     // Create a new message
-    public void createMessage(Long channelId, String content, String username) {
+    public void createMessage(Long channelId, String content, String username, Long userId) { // Add userId parameter
         Message message = new Message();
         message.setContent(content);
         message.setUsername(username);
         message.setChannelId(channelId);
+        message.setUserId(userId); // Set the user ID
         messageRepository.save(message);
     }
 }

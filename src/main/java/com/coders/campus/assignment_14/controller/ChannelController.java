@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 @RequestMapping("/channels")
@@ -22,6 +23,9 @@ public class ChannelController {
 
     @Autowired
     private MessageService messageService;
+
+    // AtomicLong to generate unique user IDs
+    private final AtomicLong userIdGenerator = new AtomicLong();
 
     // Show all available channels
     @GetMapping
@@ -45,10 +49,10 @@ public class ChannelController {
     public String sendMessage(@PathVariable Long id, @RequestParam String content, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user != null) {
-            messageService.createMessage(id, content, user.getUsername());
+            // Pass the userId to the createMessage method
+            messageService.createMessage(id, content, user.getUsername(), user.getId()); // Use user.getId() here
         } else {
-            // Handle case where user is null (e.g., redirect to login)
-            return "redirect:/login"; // Adjust according to your logic
+            return "redirect:/login"; // Redirect to login if user is null
         }
         return "redirect:/channels/" + id; // Redirect to the channel page
     }
@@ -73,5 +77,10 @@ public class ChannelController {
         Channel newChannel = new Channel(name); // Ensure you have a constructor that takes a name
         channelService.createChannel(newChannel);
         return "redirect:/channels"; // Redirect to channels page after creation
+    }
+
+    // Generate a new user ID for each user
+    public Long generateUserId() {
+        return userIdGenerator.incrementAndGet();
     }
 }

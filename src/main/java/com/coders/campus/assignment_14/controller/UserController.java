@@ -17,6 +17,24 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ChannelController channelController; // Add ChannelController reference
+
+    @PostMapping("/login")
+    public String loginUser(@RequestParam String username, @RequestParam String password, HttpSession session) {
+        // Check login logic...
+
+        // Generate a unique ID for the user
+        Long uniqueUserId = channelController.generateUserId(); // Use the method from ChannelController
+
+        // Create the user object
+        User loggedInUser = new User(username, password, uniqueUserId);
+
+        // Store the user in the session
+        session.setAttribute("user", loggedInUser);
+
+        return "redirect:/channels"; // Redirect to the channels page after login
+    }
 
     // Display form to create user
     @GetMapping("/create")
@@ -27,10 +45,11 @@ public class UserController {
     // Handle user creation
     @PostMapping("/create")
     public String createUser(@RequestParam String username, @RequestParam String password, HttpSession session) {
-        User user = new User(username, password);
-        userService.createUser(user); // Use UserService to save the user
-        session.setAttribute("user", user);  // Store user in session
-        return "redirect:/channels"; // Redirect to channel selection page
+        Long uniqueUserId = System.currentTimeMillis(); // Generate a unique Long ID using timestamp
+        User newUser = new User(username, password, uniqueUserId);
+        userService.createUser(newUser);
+        session.setAttribute("user", newUser);
+        return "redirect:/channels";
     }
 
 }
