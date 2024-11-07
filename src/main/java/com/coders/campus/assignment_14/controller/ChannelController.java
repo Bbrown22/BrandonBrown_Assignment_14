@@ -25,7 +25,11 @@ public class ChannelController {
 
     // Display all available channels
     @GetMapping
-    public String getAllChannels(Model model) {
+    public String getAllChannels(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/users/welcome"; // Redirect to welcome page if user is not logged in
+        }
         model.addAttribute("channels", channelService.getAllChannels());
         return "channels"; // Ensure "channels.html" exists in your templates folder
     }
@@ -80,13 +84,23 @@ public class ChannelController {
 
     // Display form to create a new channel
     @GetMapping("/create")
-    public String showCreateChannelForm() {
+    public String showCreateChannelForm(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/users/welcome"; // Redirect to welcome page if user is not logged in
+        }
+
         return "create-channel"; // Ensure "create-channel.html" exists in your templates folder
     }
 
     // Handle new channel creation
     @PostMapping("/create")
-    public String createChannel(@RequestParam String name) {
+    public String createChannel(@RequestParam String name, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/users/welcome"; // Redirect to welcome page if user is not logged in
+        }
+
         Channel newChannel = new Channel(name);
         channelService.createChannel(newChannel);
         return "redirect:/channels"; // Redirect to the channels page to show the updated list

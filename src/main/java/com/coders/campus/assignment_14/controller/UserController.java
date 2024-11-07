@@ -26,7 +26,7 @@ public class UserController {
         User newUser = new User(username, password, null); // ID auto-generated in UserService
         userService.createUser(newUser);
         session.setAttribute("user", newUser);
-        return "channels"; // Redirects to channels page to choose a channel
+        return "redirect:/channels "; // Redirects to channels page to choose a channel
     }
 
     // Handle user logout
