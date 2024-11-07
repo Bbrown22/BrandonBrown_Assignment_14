@@ -67,12 +67,12 @@ public class ChannelController {
     public List<Message> pollMessages(@PathVariable Long channelId, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
-            throw new RuntimeException("User not authenticated"); // Add proper error handling if needed
+            throw new RuntimeException("User not authenticated");
         }
 
         Channel channel = channelService.getChannelById(channelId);
         if (channel == null) {
-            throw new RuntimeException("Channel not found"); // Add proper error handling if needed
+            throw new RuntimeException("Channel not found");
         }
 
         return messageService.getMessagesByChannel(channel);

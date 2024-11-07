@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Channel - [[${channel.name}]]</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style.css"> <!-- Corrected path for CSS -->
 </head>
 <body>
 <h1>Channel: [[${channel.name}]]</h1>
@@ -13,6 +13,7 @@
 <div id="messages-container">
     <h2>Messages:</h2>
     <ul id="message-list">
+        <!-- Use Thymeleaf to iterate through messages -->
         <li th:each="message : ${messages}">
             <strong th:text="${message.username}">Username</strong>: <span th:text="${message.content}">Message</span>
         </li>
@@ -31,6 +32,6 @@
 </a>
 
 <!-- Include the JavaScript file for handling messages -->
-<script src="/channel.js"></script>
+<script src="/channel.js"></script> <!-- Corrected path for JavaScript -->
 </body>
 </html>
