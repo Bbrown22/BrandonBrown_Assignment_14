@@ -13,8 +13,11 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    // Save a new user
+    // Save a new user with a unique ID
     public void createUser(User user) {
+        if (user.getId() == null) {
+            user.setId(userRepository.generateNewId()); // Use the repository to set a unique ID
+        }
         userRepository.save(user);
     }
 

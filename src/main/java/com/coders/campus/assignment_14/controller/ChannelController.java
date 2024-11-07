@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 @RequestMapping("/channels")
@@ -24,63 +23,72 @@ public class ChannelController {
     @Autowired
     private MessageService messageService;
 
-    // AtomicLong to generate unique user IDs
-    private final AtomicLong userIdGenerator = new AtomicLong();
-
-    // Show all available channels
+    // Display all available channels
     @GetMapping
     public String getAllChannels(Model model) {
         model.addAttribute("channels", channelService.getAllChannels());
-        return "channels"; // Thymeleaf template name
+        return "channels"; // Ensure "channels.html" exists in your templates folder
     }
 
-    // Show messages for a specific channel
-    @GetMapping("/{id}")
-    public String getChannelMessages(@PathVariable Long id, Model model, HttpSession session) {
-        Channel channel = channelService.getChannelById(id);
+    // Display messages for a specific channel
+    @GetMapping("/{channelId}")
+    public String getChannelMessages(@PathVariable Long channelId, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/users/welcome"; // Redirect to welcome page if user is not logged in
+        }
+
+        Channel channel = channelService.getChannelById(channelId);
+        if (channel == null) {
+            return "redirect:/channels"; // Redirect to a safe page if channel doesn't exist
+        }
+
         List<Message> messages = messageService.getMessagesByChannel(channel);
         model.addAttribute("channel", channel);
         model.addAttribute("messages", messages);
-        return "channel"; // Thymeleaf template name
+        return "channel"; // Ensure "channel.html" exists in your templates folder
     }
 
     // Send a message to a specific channel
-    @PostMapping("/{id}/message")
-    public String sendMessage(@PathVariable Long id, @RequestParam String content, HttpSession session) {
+    @PostMapping("/{channelId}/message")
+    public String sendMessage(@PathVariable Long channelId, @RequestParam String content, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user != null) {
-            // Pass the userId to the createMessage method
-            messageService.createMessage(id, content, user.getUsername(), user.getId()); // Use user.getId() here
+            messageService.createMessage(channelId, content, user.getUsername(), user.getId());
         } else {
-            return "redirect:/login"; // Redirect to login if user is null
+            return "redirect:/users/welcome"; // Redirect to welcome page if user is null
         }
-        return "redirect:/channels/" + id; // Redirect to the channel page
+        return "redirect:/channels/" + channelId;
     }
 
-    // API endpoint for polling messages
-    @GetMapping("/{id}/messages")
+    // API endpoint for polling messages for a specific channel
+    @GetMapping("/{channelId}/messages")
     @ResponseBody
-    public List<Message> pollMessages(@PathVariable Long id) {
-        Channel channel = channelService.getChannelById(id);
+    public List<Message> pollMessages(@PathVariable Long channelId, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            throw new RuntimeException("User not authenticated"); // Add proper error handling if needed
+        }
+
+        Channel channel = channelService.getChannelById(channelId);
+        if (channel == null) {
+            throw new RuntimeException("Channel not found"); // Add proper error handling if needed
+        }
+
         return messageService.getMessagesByChannel(channel);
     }
 
     // Display form to create a new channel
     @GetMapping("/create")
     public String showCreateChannelForm() {
-        return "create-channel"; // Ensure you have this template
+        return "create-channel"; // Ensure "create-channel.html" exists in your templates folder
     }
 
     // Handle new channel creation
     @PostMapping("/create")
     public String createChannel(@RequestParam String name) {
-        Channel newChannel = new Channel(name); // Ensure you have a constructor that takes a name
+        Channel newChannel = new Channel(name);
         channelService.createChannel(newChannel);
-        return "redirect:/channels"; // Redirect to channels page after creation
-    }
-
-    // Generate a new user ID for each user
-    public Long generateUserId() {
-        return userIdGenerator.incrementAndGet();
+        return "redirect:/channels"; // Redirect to the channels page to show the updated list
     }
 }

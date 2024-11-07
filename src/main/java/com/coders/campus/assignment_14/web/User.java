@@ -3,8 +3,9 @@ package com.coders.campus.assignment_14.web;
 public class User {
     private String username;
     private String password;
-    private Long id; // Change to Long for unique ID
+    private Long id; // Unique ID
 
+    // Constructor
     public User(String username, String password, Long id) {
         this.username = username;
         this.password = password;

@@ -19,13 +19,13 @@ public class MessageService {
         return messageRepository.findByChannel(channel.getId());
     }
 
-    // Create a new message
-    public void createMessage(Long channelId, String content, String username, Long userId) { // Add userId parameter
+    // Create a new message with the correct userId
+    public void createMessage(Long channelId, String content, String username, Long userId) {
         Message message = new Message();
         message.setContent(content);
         message.setUsername(username);
         message.setChannelId(channelId);
-        message.setUserId(userId); // Set the user ID
+        message.setUserId(userId); // Set the user ID from the User session object
         messageRepository.save(message);
     }
 }
